@@ -1,0 +1,8 @@
+<div class="list-container">
+    <ul *ngIf="workItems && workItems.length > 0; else empty">
+        <li *ngFor="let item of workItems">
+            {{ item.itemNumber }}
+        </li>
+    </ul>
+    <ng-template #empty>nothing</ng-template>
+</div>

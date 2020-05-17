@@ -1,0 +1,14 @@
+<div class="group-container">
+    <div *ngFor="let group of participantGroups; index as index" class="participant-group">
+        <div class="group-number">
+            {{ group.voteValue }}
+        </div>
+        <div class="group-participants">
+            <div *ngFor="let participant of group"
+                class="participant"
+                tooltip="{{participant.voteHistoryDisplay || '-' }}">
+                {{ participant.preferredName[0] + participant.lastName[0] }}
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,10 @@
+.list-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 0;
+
+    ul {
+        padding: 0;
+        list-style: none;
+    }
+}
