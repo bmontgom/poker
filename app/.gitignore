@@ -43,5 +43,6 @@ testem.log
 
 # System Files
 .DS_Store
-app/.DS_Store
 Thumbs.db
+
+dist/
