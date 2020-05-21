@@ -14,7 +14,6 @@ export class ParticipantsComponent implements OnInit {
 
     ngOnInit(): void {
         this.appService.participants$.subscribe(participants => {
-            console.log('got new participants');
             this.participantGroups = [];
             this.appService.allowedVotes.forEach((vote, index) => {
                 let newGroup = [];
@@ -37,7 +36,9 @@ export class ParticipantsComponent implements OnInit {
                 }
             });
 
-            this.participantGroups = this.participantGroups.filter(group => group.length > 0);
+            this.participantGroups = this.participantGroups
+                .filter(group => group.length > 0)
+                .sort((a, b) => b.length - a.length);
         });
     }
 

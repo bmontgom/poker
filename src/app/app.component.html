@@ -7,22 +7,23 @@
             <div class="current-item">
                 {{ currentItem.itemNumber }}
             </div>
-            <button
-                [disabled]="itemsToPoint.length <= 0"
-                (click)="lockInVotes()">
-                Next Item
-            </button>
+            <p-button
+                [disabled]="!currentItem"
+                (click)="lockInVotes()"
+                label="Next Item">
+            </p-button>
         </div>
         <app-participants></app-participants>
         <div class="voting-buttons">
-            <button *ngFor="let vote of allowedVotes"
-                (click)="castVote(vote)">
-                {{ vote.name || vote.value }}
+            <button
+                pButton
+                *ngFor="let vote of allowedVotes"
+                (click)="castVote(vote)"
+                label="{{ vote.name || vote.value }}">
             </button>
         </div>
     </div>
     <div class="side-column">
-        <app-item-list [workItems]="pointedItems"></app-item-list>
+        todo embed description and AC if possible
     </div>
 </div>
-<div class="embed-container"></div>

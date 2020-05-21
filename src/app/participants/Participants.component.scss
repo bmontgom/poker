@@ -7,18 +7,17 @@
     .participant-group {
         display: flex;
         justify-content: flex-start;
-        padding: 0.25rem;
+        border: 1px solid gray;
+        padding-top: 0.25rem;
         margin-bottom: 1rem;
         width: 75%;
 
         .group-number {
+            margin-top: -0.25rem;
             cursor: default;
-            display: flex;
-            width: 0.5rem;
-            padding: 1rem 0.25rem 0 0.25rem ;
-            justify-content: center;
+            padding: 1.25rem 0.5rem 0 0.5rem;
+            text-align: center;
             border-right: solid 1px gray;
-            font-weight: bold;
         }
 
         .group-participants {
@@ -38,6 +37,12 @@
                 border-radius: 100%;
                 margin: 0.5rem;
             }
+        }
+
+        .group-vote-count {
+            position: relative;
+            bottom: 0.25rem;
+            right: 0.25rem;
         }
     }
 }

@@ -21,17 +21,21 @@ export class AppComponent implements OnInit {
             { itemNumber: 106832 },
             { itemNumber: 257198 },
             { itemNumber: 348624 },
-            { itemNumber: 458163 },
+            { itemNumber: 458163 }
         ];
         this.currentItem = this.itemsToPoint.shift();
         this.allowedVotes = this.appService.allowedVotes;
     }
 
     castVote(vote: Vote) {
-        this.appService.castVote(vote);
+        if (vote.value != this.appService.user.vote.value) {
+            this.appService.castVote(vote);
+        }
     }
 
     lockInVotes() {
         this.appService.lockInVote(this.currentItem, 1);
+        this.pointedItems.push(this.currentItem);
+        this.currentItem = this.itemsToPoint.shift();
     }
 }

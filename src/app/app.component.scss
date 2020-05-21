@@ -4,9 +4,13 @@
     height: 100vh;
 }
 
-.embed-container {
+
+iframe, .embed-container {
     width: 100vw;
     height: 100vh;
+}
+
+.embed-container {
     background-color: blue;
 }
 
@@ -47,8 +51,13 @@
     .voting-buttons {
         display: flex;
         flex: 1;
-        justify-items: center;
+        justify-content: center;
         align-items: flex-end;
         padding-bottom: 2rem;
+
+        button {
+            width: 4rem;
+            margin: 0 0.5rem;
+        }
     }
 }
