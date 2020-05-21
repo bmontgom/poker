@@ -2,14 +2,17 @@ import { Injectable } from '@angular/core';
 import { Participant } from 'src/models/Participant.model';
 import { Vote } from 'src/models/Vote.model';
 import { WorkItem } from 'src/models/WorkItem.model';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, Subject } from 'rxjs';
+import { Socket } from 'ngx-socket-io';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AppService {
-    private participants: Participant[];
+    private participants: Participant[] = [];
+    private votesForCurrentItem: String[] = [];
     participants$: ReplaySubject<Participant[]> = new ReplaySubject<Participant[]>();
+    votesForCurrentItem$: Subject<String[]> = new Subject<String[]>();
     user: Participant;
 
     readonly allowedVotes: Vote[] = [
@@ -21,45 +24,32 @@ export class AppService {
         { value: 8 }
     ];
 
-    constructor() {
-        this.participants = [
-            new Participant("Barrett", "Montgomery"),
-            new Participant("Brent", "Nelson"),
-            new Participant("Sarah", "Brittain"),
-            new Participant("Justin", "Tullos"),
-            new Participant("Cory", "Steudeman"),
-            new Participant("James", "Brooks"),
-            new Participant("Saikiran", "Muthyala"),
-            new Participant("Jason", "Ellis"),
-            new Participant("Andrew", "Corsini"),
-            new Participant("Gaurav", "Chawla"),
-            new Participant("Alec", "Winebrenner"),
-            new Participant("Sai", "Katram"),
-            new Participant("Manideep", "Kama"),
-            new Participant("Abhinav", "Kagithapu"),
-            new Participant("Heather", "Guyll"),
-            new Participant("Lingareddy", "Gopavarapu"),
-            new Participant("Megan", "McKinney"),
-            new Participant("Mounika", "Keesara"),
-            new Participant("Phani", "Kandi"),
-            new Participant("Praneeth", "Chilumula"),
-            new Participant("Sai Ram", "Geetla"),
-            new Participant("Sandeep", "Bainddla")
-        ];
-        this.user = this.participants[0];
-        this.participants.forEach((participant, index) => participant.castVote(this.allowedVotes[index % this.allowedVotes.length]));
-        this.participants.forEach(p => p.castVote(this.allowedVotes[0]));
-        this.participants.push(new Participant("Undecided", "Voter"));
-        this.participants$.next(this.participants);
+    constructor(private socket: Socket) {
+        this.socket.emit('system status', 'initializing service');
+        this.socket.on('init data', data => {
+            data.forEach(user => {
+                this.participants.push(new Participant(user.id, user.preferredName, user.lastName));
+            });
+            console.log(this.participants);
+            this.participants.forEach((participant, index) => participant.castVote(this.allowedVotes[index % this.allowedVotes.length]));
+            this.participants$.next(this.participants);
+        });
     }
 
-    castVote(vote: Vote) {
-        this.user.castVote(vote);
+    castVote(user: Participant, vote: Vote) {
+        user.castVote(vote);
         this.participants$.next(this.participants);
     }
 
     lockInVote(workItem: WorkItem, points: number) {
         this.participants.forEach(participant => participant.resetForNewItem());
         this.participants$.next(this.participants);
+        this.votesForCurrentItem$.next([]);
+    }
+
+    signIn(user: Participant) {
+        this.user = user;
+        this.participants.push(this.user);
+        this.socket.emit('sign in', this.user);
     }
 }

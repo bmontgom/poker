@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { WorkItem } from 'src/models/WorkItem.model';
 import { AppService } from './app.service';
 import { Vote } from 'src/models/Vote.model';
+import { Participant } from 'src/models/Participant.model';
 
 @Component({
     selector: 'app-root',
@@ -13,6 +14,8 @@ export class AppComponent implements OnInit {
     pointedItems: WorkItem[] = [];
     currentItem: WorkItem = null;
     allowedVotes: Vote[] = [];
+    votesForCurrentItem: String[] = [];
+    isSignedIn: boolean = false;
 
     constructor(private appService: AppService) { }
 
@@ -28,8 +31,8 @@ export class AppComponent implements OnInit {
     }
 
     castVote(vote: Vote) {
-        if (vote.value != this.appService.user.vote.value) {
-            this.appService.castVote(vote);
+        if (!this.appService.user.vote || vote.value != this.appService.user.vote.value) {
+            this.appService.castVote(this.appService.user, vote);
         }
     }
 
@@ -37,5 +40,18 @@ export class AppComponent implements OnInit {
         this.appService.lockInVote(this.currentItem, 1);
         this.pointedItems.push(this.currentItem);
         this.currentItem = this.itemsToPoint.shift();
+    }
+
+    onSignInKey(key) {
+        console.log(key);
+    }
+
+    signIn(preferredName: String, lastName: String) {
+        //todo check for previous socket connections and reconnect with same info
+        if (preferredName && lastName) {
+            this.isSignedIn = true;
+            //todo wait for the socket to say yeah ok you're in
+            this.appService.signIn(new Participant(Date.now(), preferredName, lastName));
+        }
     }
 }

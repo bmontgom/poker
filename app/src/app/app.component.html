@@ -1,4 +1,4 @@
-<div class="poker-container">
+<div class="poker-container" *ngIf="isSignedIn; else signedOut">
     <div class="side-column">
         <app-item-list [workItems]="itemsToPoint"></app-item-list>
     </div>
@@ -27,3 +27,27 @@
         todo embed description and AC if possible
     </div>
 </div>
+<ng-template #signedOut>
+    <div class="poker-container sign-in-form">
+        <h1>Sign In</h1>
+        just type your name and press enter
+        <hr style="width: 30%"/>
+        <input
+            #preferredName
+            autofocus
+            pInputText
+            type="text"
+            placeholder="preferred name"
+            value="Tester"
+            required
+            (keyup.enter)="signIn(preferredName.value, lastName.value)"/>
+            <input
+            #lastName
+            pInputText
+            type="text"
+            placeholder="last name"
+            value="McButts"
+            required
+            (keyup.enter)="signIn(preferredName.value, lastName.value)"/>
+    </div>
+</ng-template>

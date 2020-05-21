@@ -38,7 +38,11 @@ export class ParticipantsComponent implements OnInit {
 
             this.participantGroups = this.participantGroups
                 .filter(group => group.length > 0)
-                .sort((a, b) => b.length - a.length);
+                .sort((a, b) => {
+                    let sizeDiff = b.length - a.length;
+                    //@ts-ignore
+                    return sizeDiff != 0 ? sizeDiff : a.voteValue - b.voteValue;
+                });
         });
     }
 

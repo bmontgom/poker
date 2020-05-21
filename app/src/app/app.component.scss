@@ -4,6 +4,15 @@
     height: 100vh;
 }
 
+.sign-in-form {
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    * {
+        margin: 0.5em;
+    }
+}
 
 iframe, .embed-container {
     width: 100vw;
