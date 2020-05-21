@@ -12,12 +12,13 @@ export class AppService {
     participants$: ReplaySubject<Participant[]> = new ReplaySubject<Participant[]>();
     user: Participant;
 
-    readonly allowedVotes = [
+    readonly allowedVotes: Vote[] = [
         { value: 0 },
         { value: 1 },
         { value: 2 },
         { value: 3 },
         { value: 5 },
+        { value: 8 }
     ];
 
     constructor() {

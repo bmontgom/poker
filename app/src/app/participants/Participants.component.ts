@@ -15,10 +15,10 @@ export class ParticipantsComponent implements OnInit {
     ngOnInit(): void {
         this.appService.participants$.subscribe(participants => {
             this.participantGroups = [];
-            this.appService.allowedVotes.forEach((vote, index) => {
+            this.appService.allowedVotes.forEach(vote => {
                 let newGroup = [];
                 //@ts-ignore
-                newGroup.voteValue = this.appService.allowedVotes[index].value;
+                newGroup.voteValue = vote.value;
                 this.participantGroups.push(newGroup);
             });
             let newGroup = [];

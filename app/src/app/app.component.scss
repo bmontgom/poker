@@ -50,6 +50,7 @@ iframe, .embed-container {
 
     .voting-buttons {
         display: flex;
+        flex-wrap: wrap;
         flex: 1;
         justify-content: center;
         align-items: flex-end;
