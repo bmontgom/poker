@@ -14,10 +14,13 @@ export class AppComponent implements OnInit {
     pointedItems: WorkItem[] = [];
     currentItem: WorkItem = null;
     allowedVotes: Vote[] = [];
+    chatMessages: String[] = [];
     votesForCurrentItem: String[] = [];
     isSignedIn: boolean = false;
 
-    constructor(private appService: AppService) { }
+    constructor(private appService: AppService) {
+        this.appService.chatMessages$.subscribe(messages => this.chatMessages = messages);
+    }
 
     ngOnInit() {
         this.itemsToPoint = [
@@ -51,7 +54,11 @@ export class AppComponent implements OnInit {
         if (preferredName && lastName) {
             this.isSignedIn = true;
             //todo wait for the socket to say yeah ok you're in
-            this.appService.signIn(new Participant(Date.now(), preferredName, lastName));
+            this.appService.signIn(preferredName, lastName);
         }
+    }
+
+    sendChat(message: String) {
+        this.appService.sendChat(message);
     }
 }

@@ -1,15 +1,14 @@
 import { Vote } from './Vote.model';
 
 export class Participant {
-    id: number;
+    id: String;
     preferredName: String;
     lastName: String;
     vote?: Vote;
     voteHistory?: Vote[] = [];
     voteHistoryDisplay?: String;
 
-    constructor(id: number, preferredName: String, lastName: String) {
-        this.id = id;
+    constructor(preferredName: String, lastName: String) {
         this.preferredName = preferredName;
         this.lastName = lastName;
     }

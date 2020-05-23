@@ -24,7 +24,12 @@
         </div>
     </div>
     <div class="side-column">
-        todo embed description and AC if possible
+        <ul style="list-style: none;">
+            <li *ngFor="let message of chatMessages">
+                {{ message }}
+            </li>
+        </ul>
+        <input #chatInput pInputText type="text" (keyup.enter)="sendChat(chatInput.value); chatInput.value = '';" />
     </div>
 </div>
 <ng-template #signedOut>
