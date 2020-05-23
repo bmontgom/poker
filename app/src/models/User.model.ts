@@ -1,15 +1,15 @@
 import { Vote } from './Vote.model';
 
-export class Participant {
+export class User {
     id: String;
-    preferredName: String;
+    firstName: String;
     lastName: String;
     vote?: Vote;
     voteHistory?: Vote[] = [];
     voteHistoryDisplay?: String;
 
-    constructor(preferredName: String, lastName: String) {
-        this.preferredName = preferredName;
+    constructor(firstName: String, lastName: String) {
+        this.firstName = firstName;
         this.lastName = lastName;
     }
 

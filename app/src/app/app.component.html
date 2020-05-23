@@ -13,7 +13,7 @@
                 label="Next Item">
             </p-button>
         </div>
-        <app-participants></app-participants>
+        <app-users></app-users>
         <div class="voting-buttons">
             <button
                 pButton
@@ -38,14 +38,14 @@
         just type your name and press enter
         <hr style="width: 30%"/>
         <input
-            #preferredName
+            #firstName
             autofocus
             pInputText
             type="text"
-            placeholder="preferred name"
+            placeholder="first name"
             value="Tester"
             required
-            (keyup.enter)="signIn(preferredName.value, lastName.value)"/>
+            (keyup.enter)="signIn(firstName.value, lastName.value)"/>
             <input
             #lastName
             pInputText
@@ -53,6 +53,6 @@
             placeholder="last name"
             value="McButts"
             required
-            (keyup.enter)="signIn(preferredName.value, lastName.value)"/>
+            (keyup.enter)="signIn(firstName.value, lastName.value)"/>
     </div>
 </ng-template>

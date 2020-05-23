@@ -4,7 +4,7 @@
     align-items: center;
     flex-direction: column;
 
-    .participant-group {
+    .user-group {
         display: flex;
         justify-content: flex-start;
         border: 4px solid black;
@@ -26,7 +26,7 @@
             font-style: italic;
         }
 
-        .group-participants {
+        .group-users {
             flex: 9;
             display: flex;
             justify-content: flex-start;
@@ -34,7 +34,7 @@
             border-radius: 10px;
             background-color: white;
 
-            .participant {
+            .user {
                 cursor: default;
                 width: 2.5rem;
                 height: 2.5rem;
