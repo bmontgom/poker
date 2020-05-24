@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { WorkItem } from 'src/models/WorkItem.model';
 import { AppService } from './app.service';
 import { Vote } from 'src/models/Vote.model';
-import { User } from 'src/models/User.model';
+import { ChatMessage } from 'src/models/ChatMessage.model';
 
 @Component({
     selector: 'app-root',
@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
     pointedItems: WorkItem[] = [];
     currentItem: WorkItem = null;
     allowedVotes: Vote[] = [];
-    chatMessages: String[] = [];
+    chatMessages: ChatMessage[] = [];
     votesForCurrentItem: String[] = [];
     isSignedIn: boolean = false;
 
@@ -35,7 +35,7 @@ export class AppComponent implements OnInit {
 
     castVote(vote: Vote) {
         if (!this.appService.user.vote || vote.value != this.appService.user.vote.value) {
-            this.appService.castVote(this.appService.user, vote);
+            this.appService.castVote(vote);
         }
     }
 

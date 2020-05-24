@@ -9,26 +9,30 @@ import { AppService } from '../app.service';
 })
 export class UsersComponent implements OnInit {
     userGroups: User[][] = [];
+    backupGroups: User[][] = [];
 
-    constructor(private appService: AppService) { }
+    constructor(private appService: AppService) {
+        this.backupGroups = [];
+        this.appService.allowedVotes.forEach(vote => {
+            let newGroup = [];
+            //@ts-ignore
+            newGroup.voteValue = vote.value;
+            this.backupGroups.push(newGroup);
+        });
+        let newGroup = [];
+        //@ts-ignore
+        newGroup.voteValue = '?';
+        this.backupGroups.push(newGroup);
+    }
 
     ngOnInit(): void {
         this.appService.users$.subscribe(users => {
-            this.userGroups = [];
-            this.appService.allowedVotes.forEach(vote => {
-                let newGroup = [];
-                //@ts-ignore
-                newGroup.voteValue = vote.value;
-                this.userGroups.push(newGroup);
-            });
-            let newGroup = [];
-            //@ts-ignore
-            newGroup.voteValue = '?';
-            this.userGroups.push(newGroup);
+            this.resetUserGroups();
             users.forEach(user => {
                 if (user.vote) {
-                    let groupIndex = this.appService.allowedVotes.indexOf(user.vote);
-                    this.userGroups[grouaIndex].push(user);
+                    let groupIndex = this.appService.allowedVotes
+                        .findIndex(vote => vote.value === user.vote.value)
+                    this.userGroups[groupIndex].push(user);
                     //@ts-ignore
                     this.userGroups[groupIndex].voteValue = user.vote.value;
                 } else {
@@ -46,4 +50,8 @@ export class UsersComponent implements OnInit {
         });
     }
 
+    private resetUserGroups() {
+        console.log(this.backupGroups);
+        this.userGroups = JSON.parse(JSON.stringify(this.backupGroups));
+    }
 }

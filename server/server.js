@@ -1,18 +1,20 @@
 const app = require('express')();
 const express = require('express');
-const http = require('http').createServer(app);
-const io = require('socket.io')(http, {
-    origins: '*:*',
-    transports: ['websocket']
+const server = require('http').createServer(app);
+const io = require('socket.io')(server, {
+    wsEngine: 'ws',
+    origins: '*:*'
+    // transports: ['websocket']
 });
 const path = require('path');
 const uuid = require('uuid');
 
 const state = {
-    users: {},
+    connectedUsers: {},
+    disconnectedUsers: {},
     workItems: [],
     currentItem: null,
-    chat: [],
+    chatHistory: [],
     disconnectedUsers: {}
 };
 
@@ -21,36 +23,43 @@ app.use(express.static(path.resolve(__dirname + '/../dist/poker/')));
 io.on('connection', (socket) => {
     let userID = uuid.v4();
     const socketID = socket.conn.id;
-    socket.emit('confirm', uuid.v4());
+    socket.emit('confirm', userID);
     slog('connected');
 
     socket.on('reconnection', user => {
         slog('user reconnected', user.id);
         userID = user.id;
-        state.users[socketID] = state.disconnectedUsers[userID];
+        state.connectedUsers[socketID] = state.disconnectedUsers[userID];
         delete state.disconnectedUsers[userID];
-        socket.broadcast.emit('user reconnect', userID);
+        console.log('------------------');
+        console.log(state);
+        console.log('------------------');
+        socket.broadcast.emit('user reconnect', { state, userID });
     });
 
     socket.on('disconnect', () => {
         slog('disconnected');
-        state.disconnectedUsers[userID] = state.users[socketID];
-        delete state.users[socketID];
-        socket.broadcast.emit('user disconnect', userID);
+        state.disconnectedUsers[userID] = state.connectedUsers[socketID];
+        delete state.connectedUsers[socketID];
+        console.log('---------- disconnect ------------');
+        console.log(state);
+        console.log('----------------------');
+        socket.broadcast.emit('user disconnect', {state, userID});
     });
 
     socket.on('user sign in', user => {
         slog('user signed in: ', user);
-        state.users[socketID] = user;
-        socket.emit('init', state);
-        socket.broadcast.emit('user sign in', state);
+        state.connectedUsers[socketID] = user;
+        socket.emit('init', {state});
+        socket.broadcast.emit('user sign in', { state, user });
     });
 
     socket.on('user vote', vote => {
         slog('user voted', userID, vote);
-        state.users[socketID].vote = vote;
-        state.users[socketID].voteHistory.push(vote);
-        socket.broadcast.emit('user vote', state);
+        state.connectedUsers[socketID].vote = vote;
+        state.connectedUsers[socketID].voteHistory.push(vote);
+        socket.emit('user vote', { state, userID, vote });
+        socket.broadcast.emit('user vote', { state, userID, vote });
     });
 
     socket.on('switch work items', data => {
@@ -65,11 +74,18 @@ io.on('connection', (socket) => {
         //broadcast the addition
     });
 
-    socket.on('chat', message => {
+    socket.on('user chat', message => {
         slog('user chat', userID, message)
-        //save to state
-        //broadcast the message
-        socket.broadcast.emit('chat', message);
+        state.chatHistory.push({
+            userID,
+            timestamp: Date.now(),
+            message
+        });
+        socket.broadcast.emit('user chat', {
+            state: state,
+            userID: userID,
+            message: message
+        });
     });
 
     function slog() {
@@ -81,6 +97,6 @@ app.get('/', (req, res) => {
     res.sendFile(path.resolve(__dirname + '/../dist/poker/index.html'));
 });
 
-http.listen(3000, () => {
+server.listen(3000, () => {
     console.log('listening on: ', 3000);
 });

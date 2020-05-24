@@ -4,21 +4,20 @@ import { Vote } from 'src/models/Vote.model';
 import { WorkItem } from 'src/models/WorkItem.model';
 import { ReplaySubject, Subject } from 'rxjs';
 import { Socket } from 'ngx-socket-io';
+import { ChatMessage } from 'src/models/ChatMessage.model';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AppService {
-    chatMessages$: Subject<String[]> = new Subject<String[]>();
+    chatMessages$: Subject<ChatMessage[]> = new Subject<ChatMessage[]>();
     users$: ReplaySubject<User[]> = new ReplaySubject<User[]>();
     votesForCurrentItem$: Subject<String[]> = new Subject<String[]>();
     user: User;
 
     private state: State = {
-        users: {
-            connectedUsers: {},
-            disconnectedUsers: {}
-        },
+        connectedUsers: {},
+        disconnectedUsers: {},
         chatHistory: [],
         workItems: [],
         currentItem: null
@@ -45,30 +44,65 @@ export class AppService {
                 this.socket.emit('reconnection', this.user);
             }
         });
-        this.socket.on('user reconnect', (state: State) => {
-            console.log('user reconnect');
-            this.state.users.connectedUsers = state.users;
+        this.socket.on('user disconnect', data => {
+            console.log('user disconnect', data.userID);
+            this.updateState(data.state);
         });
-        this.socket.on('user sign in', user => {
-            console.log('user sign in', user);
-            this.state.users.connectedUsers.push(user);
-            this.users$.next(this.state.users.connectedUsers);
+        this.socket.on('user reconnect', data => {
+            console.log('user reconnect', data.userID);
+            this.updateState(data.state);
         });
-        this.socket.on('chat', message => {
-            console.log('chat', message);
-            this.state.chatHistory.push(message);
-            this.chatMessages$.next(this.state.chatHistory);
+        this.socket.on('user sign in', data => {
+            console.log('user sign in', data.user);
+            this.updateState(data.state);
+        });
+        this.socket.on('init', data => {
+            console.log('init', data);
+            this.updateState(data.state);
+        })
+        this.socket.on('user vote', data => {
+            console.log('user vote', data.userID, data.vote);
+            this.updateState(data.state);
+
+        });
+        this.socket.on('user chat', data => {
+            console.log('user chat', data.userID, data.message);
+            this.updateState(data.state)
         })
     }
 
-    castVote(user: User, vote: Vote) {
-        user.castVote(vote);
-        this.users$.next(this.state.users.connectedUsers);
+    updateState(newState: State) {
+        const oldState = this.state;
+        if (this.areJsonDifferent(newState, oldState)) {
+            if (this.areJsonDifferent(newState.connectedUsers, oldState.connectedUsers)) {
+                this.users$.next(Object.values(newState.connectedUsers));
+            }
+            if (this.areJsonDifferent(newState.chatHistory, oldState.chatHistory)) {
+                this.chatMessages$.next(newState.chatHistory);
+            }
+            if (this.areJsonDifferent(newState.workItems, oldState.workItems)) {
+                // emit workItems
+            }
+            if (this.areJsonDifferent(newState.currentItem, oldState.currentItem)) {
+                // emit currentItem
+            }
+
+            this.state = newState;
+        }
+    }
+
+    private areJsonDifferent(a: any, b: any) {
+        return JSON.stringify(a) !== JSON.stringify(b);
+    }
+
+    castVote(vote: Vote) {
+        this.socket.emit('user vote', vote);
+        this.users$.next(Object.values(this.state.connectedUsers));
     }
 
     lockInVote(workItem: WorkItem, points: number) {
-        this.state.users.connectedUsers.forEach(user => user.resetForNewItem());
-        this.users$.next(this.state.users.connectedUsers);
+        this.state.connectedUsers.forEach(user => user.resetForNewItem());
+        this.users$.next(Object.values(this.state.connectedUsers));
         this.votesForCurrentItem$.next([]);
     }
 
@@ -78,26 +112,26 @@ export class AppService {
             this.user.lastName = lastName;
         } else {
             this.user = new User(firstName, lastName);
-            this.state.users.connectedUsers.push(this.user);
+            this.state.connectedUsers.push(this.user);
         }
         this.socket.emit('user sign in', this.user);
     }
 
     sendChat(message: String) {
-        this.state.chatHistory.push(message);
+        this.state.chatHistory.push({
+            userID: this.user.id,
+            message,
+            timestamp: Date.now()
+        });
         this.chatMessages$.next(this.state.chatHistory);
-        this.socket.emit('chat', message);
+        this.socket.emit('user chat', message);
     }
 }
 
 class State {
-    users: Users = null;
-    workItems: WorkItem[] = [];
-    currentItem: WorkItem = null;
-    chatHistory: String[] = [];
-}
-
-class Users {
     connectedUsers: any = null;
     disconnectedUsers: any = null;
+    workItems: WorkItem[] = [];
+    currentItem: WorkItem = null;
+    chatHistory: ChatMessage[] = [];
 }
