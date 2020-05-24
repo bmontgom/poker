@@ -12,7 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 const config: SocketIoConfig = {
-    url: 'http://192.168.1.67:3000',
+    url: 'http://192.168.1.97:3000',
     options: {
         rememberTransport: false,
         transports: ['websocket']

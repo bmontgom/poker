@@ -3,8 +3,10 @@ const express = require('express');
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
     wsEngine: 'ws',
-    origins: '*:*'
-    // transports: ['websocket']
+    origins: '*:*',
+    transports: ['websocket'],
+    allowUpgrades: false,
+    destroyUpgrade: true
 });
 const path = require('path');
 const uuid = require('uuid');
