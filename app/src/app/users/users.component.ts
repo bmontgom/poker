@@ -18,21 +18,6 @@ export class UsersComponent {
       .map(vote => { return { voteValue: vote.name || vote.value, members: [] } })
       .concat([{ voteValue: '?', members: [] }]);
     this.resetUserGroups();
-    this.areVotesShown = true;
-    // this.userGroups = [
-    //   { voteValue: 0, members: [
-    //     { firstName: 'bob', lastName: 'booters' },
-    //     { firstName: 'bob', lastName: 'booters' },
-    //     { firstName: 'bob', lastName: 'booters' },
-    //     { firstName: 'bob', lastName: 'booters' },
-    //   ]},
-    //   { voteValue: 1, members: [{ firstName: 'bob', lastName: 'booters' }]},
-    //   { voteValue: 2, members: [{ firstName: 'bob', lastName: 'booters' }]},
-    //   { voteValue: 3, members: [{ firstName: 'bob', lastName: 'booters' }]},
-    //   { voteValue: 5, members: [{ firstName: 'bob', lastName: 'booters' }]},
-    //   { voteValue: 8, members: [{ firstName: 'bob', lastName: 'booters' }]},
-    //   { voteValue: '?', members: [{ firstName: 'bob', lastName: 'booters' }]},
-    // ]
 
     this.appService.state$.currentItem$.subscribe(newItem => {
       console.log('current item changed');
