@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { ItemListComponent } from './item-list/item-list.component';
-import { UsersComponent } from './users/Users.component';
+import { UsersComponent } from './users/users.component';
 
 import { TooltipModule } from 'primeng/tooltip';
 import { ButtonModule } from 'primeng/button';
