@@ -1,22 +1,24 @@
-<div class="poker-container" *ngIf="isSignedIn; else signedOut">
+<div class="poker-container" *ngIf="isConnected && isSignedIn; else signedOut">
     <!-- <div class="side-column">
         <app-item-list [workItems]="itemsToPoint"></app-item-list>
     </div> -->
     <div class="middle-column">
         <div class="header">
             <div class="current-item">
-                {{ currentItem.itemNumber }}
+                {{ currentItem && currentItem.itemNumber || '-' }}
             </div>
-            <!-- <p-button
+            <p-button
                 [disabled]="!currentItem"
-                (click)="lockInVotes()"
-                label="Next Item">
-            </p-button> -->
+                (click)="showModal()"
+                label="Next Item"
+                styleClass="ui-button-secondary">
+            </p-button>
         </div>
         <app-users></app-users>
         <div class="voting-buttons">
             <button
                 pButton
+                class="ui-button-rounded"
                 *ngFor="let vote of allowedVotes"
                 (click)="castVote(vote)"
                 label="{{ vote.name || vote.value }}">
@@ -33,26 +35,53 @@
     </div> -->
 </div>
 <ng-template #signedOut>
-    <div class="poker-container sign-in-form">
-        <h1>Sign In</h1>
-        just type your name and press enter
-        <hr style="width: 30%"/>
-        <input
-            #firstName
-            autofocus
-            pInputText
-            type="text"
-            placeholder="first name"
-            value="Tester"
-            required
-            (keyup.enter)="signIn(firstName.value, lastName.value)"/>
-            <input
-            #lastName
-            pInputText
-            type="text"
-            placeholder="last name"
-            value="McButts"
-            required
-            (keyup.enter)="signIn(firstName.value, lastName.value)"/>
+    <div *ngIf="isConnected; else disconnected" class="poker-container sign-in-form">
+      <h1>Sign In</h1>
+      just type your name and press enter
+      <hr style="width: 30%"/>
+      <input #firstName
+          autofocus
+          pInputText
+          type="text"
+          placeholder="first name"
+          required
+          (keyup.enter)="signIn(firstName.value, lastName.value)"/>
+          <input
+          #lastName
+          pInputText
+          type="text"
+          placeholder="last name"
+          required
+          (keyup.enter)="signIn(firstName.value, lastName.value)"/>
     </div>
+    <ng-template #disconnected>
+      <h1 class="poker-container sign-in-form">...connecting...</h1>
+    </ng-template>
 </ng-template>
+
+<p-dialog header="New Item Number"
+  [draggable]="false"
+  [modal]="true"
+  [closeOnEscape]="true"
+  class="confirm-modal"
+  [closable]="false"
+  [closeOnEscape]="true"
+  [(visible)]="shouldShowModal">
+  <input #newItem
+    pInputText
+    type="text"
+    (keyup.enter)="submitNewItem(newItem.value)"
+    required
+    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/>
+  <p-footer>
+    <p-button
+      label="Cancel"
+      (click)="newItem.value = null; hideModal()">
+    </p-button>
+    <p-button
+      label="Submit"
+      [disabled]="!newItem.value"
+      (click)="submitNewItem(newItem.value)">
+    </p-button>
+  </p-footer>
+</p-dialog>

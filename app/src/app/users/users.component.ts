@@ -1,57 +1,94 @@
-import { Component, OnInit } from '@angular/core';
-import { User } from 'src/models/User.model';
+import { Component } from '@angular/core';
 import { AppService } from '../app.service';
+import { User } from '../../models/User.model';
 
 @Component({
-    selector: 'app-users',
-    templateUrl: './users.component.html',
-    styleUrls: ['./users.component.scss']
+  selector: 'app-users',
+  templateUrl: './users.component.html',
+  styleUrls: ['./users.component.scss']
 })
-export class UsersComponent implements OnInit {
-    userGroups: User[][] = [];
-    backupGroups: User[][] = [];
+export class UsersComponent {
+  userGroups: any = [];
+  backupGroups: any = [];
+  areVotesShown = false;
+  users: User[] = [];
 
-    constructor(private appService: AppService) {
-        this.backupGroups = [];
-        this.appService.allowedVotes.forEach(vote => {
-            let newGroup = [];
-            //@ts-ignore
-            newGroup.voteValue = vote.value;
-            this.backupGroups.push(newGroup);
-        });
-        let newGroup = [];
-        //@ts-ignore
-        newGroup.voteValue = '?';
-        this.backupGroups.push(newGroup);
-    }
+  constructor(private appService: AppService) {
+    this.backupGroups = this.appService.allowedVotes
+      .map(vote => { return { voteValue: vote.name || vote.value, members: [] } })
+      .concat([{ voteValue: '?', members: [] }]);
+    this.resetUserGroups();
+    this.areVotesShown = true;
+    // this.userGroups = [
+    //   { voteValue: 0, members: [
+    //     { firstName: 'bob', lastName: 'booters' },
+    //     { firstName: 'bob', lastName: 'booters' },
+    //     { firstName: 'bob', lastName: 'booters' },
+    //     { firstName: 'bob', lastName: 'booters' },
+    //   ]},
+    //   { voteValue: 1, members: [{ firstName: 'bob', lastName: 'booters' }]},
+    //   { voteValue: 2, members: [{ firstName: 'bob', lastName: 'booters' }]},
+    //   { voteValue: 3, members: [{ firstName: 'bob', lastName: 'booters' }]},
+    //   { voteValue: 5, members: [{ firstName: 'bob', lastName: 'booters' }]},
+    //   { voteValue: 8, members: [{ firstName: 'bob', lastName: 'booters' }]},
+    //   { voteValue: '?', members: [{ firstName: 'bob', lastName: 'booters' }]},
+    // ]
 
-    ngOnInit(): void {
-        this.appService.users$.subscribe(users => {
-            this.resetUserGroups();
-            users.forEach(user => {
-                if (user.vote) {
-                    let groupIndex = this.appService.allowedVotes
-                        .findIndex(vote => vote.value === user.vote.value)
-                    this.userGroups[groupIndex].push(user);
-                    //@ts-ignore
-                    this.userGroups[groupIndex].voteValue = user.vote.value;
-                } else {
-                    this.userGroups[this.userGroups.length - 1].push(user);
-                }
-            });
+    this.appService.state$.currentItem$.subscribe(newItem => {
+      console.log('current item changed');
+      if (newItem.areVotesShown) {
+        console.log('showing votes');
+        this.areVotesShown = true;
+        this.updateUserGroups(this.users);
+      } else {
+        console.log('hiding votes');
+        this.areVotesShown = false;
+      }
+    });
+    this.appService.state$.connectedUsers$.subscribe(users => {
+      console.log('users users updated', users);
+      this.users = users;
+      this.updateUserGroups(users);
+    });
+  }
 
-            this.userGroups = this.userGroups
-                .filter(group => group.length > 0)
-                .sort((a, b) => {
-                    let sizeDiff = b.length - a.length;
-                    //@ts-ignore
-                    return sizeDiff != 0 ? sizeDiff : a.voteValue - b.voteValue;
-                });
-        });
-    }
+  showVotes() {
+    console.log('showVotes()');
+    this.areVotesShown = true;
+    this.appService.showVotes();
+  }
 
-    private resetUserGroups() {
-        console.log(this.backupGroups);
-        this.userGroups = JSON.parse(JSON.stringify(this.backupGroups));
-    }
+  private updateUserGroups(users: User[]) {
+    this.resetUserGroups();
+    this.sortUsersIntoGroups(users);
+    console.log('sorted', this.userGroups);
+    this.filterAndSortGroups();
+    console.log('filtered', this.userGroups);
+  }
+
+  private resetUserGroups() {
+    this.userGroups = JSON.parse(JSON.stringify(this.backupGroups));
+  }
+
+  private sortUsersIntoGroups(users: User[]) {
+    users.forEach(user => {
+      console.log(user);
+      if (user.vote) {
+        const groupIndex = this.userGroups.findIndex(group => group.voteValue === user.vote.value);
+        this.userGroups[groupIndex].members.push(user);
+      } else {
+        this.userGroups[this.userGroups.length - 1].members.push(user);
+      }
+    });
+  }
+
+  private filterAndSortGroups() {
+    this.userGroups = this.userGroups
+      .filter(group => group.members.length > 0)
+      .sort((a, b) => {
+        const sizeDiff = b.members.length - a.members.length;
+        return sizeDiff != 0 ? sizeDiff : a.voteValue - b.voteValue;
+      });
+
+  }
 }

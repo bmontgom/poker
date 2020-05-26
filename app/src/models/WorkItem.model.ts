@@ -1,3 +1,4 @@
 export class WorkItem {
-    itemNumber: Number;
+    itemNumber: number;
+    areVotesShown: boolean;
 }
