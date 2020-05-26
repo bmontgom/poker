@@ -1,16 +1,21 @@
-<div class="group-container">
-    <div *ngFor="let group of userGroups; index as index"
-        class="user-group">
-        <div class="group-number">
-            <strong>{{ group.voteValue }}</strong>
-        </div>
-        <div class="group-users">
-            <div *ngFor="let user of group"
-                class="user"
-                pTooltip="{{user.firstName + ' ' + user.lastName + '\n'}} {{user.voteHistoryDisplay || '-' }}"
-                tooltipPosition="top">
-                {{ user.firstName[0] + user.lastName[0] | uppercase }}
-            </div>
-        </div>
-    </div>
+<div class="group-container" *ngIf="areVotesShown; else votesHidden">
+  <div *ngFor="let group of userGroups"
+      class="user-group">
+      <div class="group-number">
+          <strong>{{ group.voteValue }}</strong>
+      </div>
+      <div class="group-users">
+          <div *ngFor="let user of group.members"
+              class="user"
+              pTooltip="{{ user.firstName }} {{ user.lastName }} {{'\n'}} {{ user.voteHistoryDisplay }}"
+              tooltipPosition="top">
+              {{ user.firstName[0] + user.lastName[0] | uppercase }}
+          </div>
+      </div>
+  </div>
 </div>
+<ng-template #votesHidden>
+  <div class="group-container">
+    <p-button (click)="showVotes()" label="Show Votes"></p-button>
+  </div>
+</ng-template>
