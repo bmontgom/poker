@@ -14,7 +14,7 @@ const state = {
     disconnectedUsers: {},
     // workItems: [],
     currentItem: {
-      itemNumber: 376183,
+      itemNumber: 0,
       areVotesShown: false
     },
     // chatHistory: [],
