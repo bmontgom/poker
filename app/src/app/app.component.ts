@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { WorkItem } from 'src/models/WorkItem.model';
 import { AppService } from './app.service';
 import { Vote } from 'src/models/Vote.model';
-import { ChatMessage } from 'src/models/ChatMessage.model';
+// import { ChatMessage } from 'src/models/ChatMessage.model';
 
 @Component({
     selector: 'app-root',
@@ -14,12 +14,12 @@ export class AppComponent implements OnInit {
     pointedItems: WorkItem[] = [];
     currentItem: WorkItem = null;
     allowedVotes: Vote[] = [];
-    chatMessages: ChatMessage[] = [];
+    // chatMessages: ChatMessage[] = [];
     votesForCurrentItem: String[] = [];
     isSignedIn: boolean = false;
 
     constructor(private appService: AppService) {
-        this.appService.chatMessages$.subscribe(messages => this.chatMessages = messages);
+        // this.appService.chatMessages$.subscribe(messages => this.chatMessages = messages);
     }
 
     ngOnInit() {
@@ -58,7 +58,7 @@ export class AppComponent implements OnInit {
         }
     }
 
-    sendChat(message: String) {
-        this.appService.sendChat(message);
-    }
+    // sendChat(message: String) {
+    //     this.appService.sendChat(message);
+    // }
 }

@@ -4,13 +4,13 @@ import { Vote } from 'src/models/Vote.model';
 import { WorkItem } from 'src/models/WorkItem.model';
 import { ReplaySubject, Subject } from 'rxjs';
 import { Socket } from 'ngx-socket-io';
-import { ChatMessage } from 'src/models/ChatMessage.model';
+// import { ChatMessage } from 'src/models/ChatMessage.model';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AppService {
-    chatMessages$: Subject<ChatMessage[]> = new Subject<ChatMessage[]>();
+    // chatMessages$: Subject<ChatMessage[]> = new Subject<ChatMessage[]>();
     users$: ReplaySubject<User[]> = new ReplaySubject<User[]>();
     votesForCurrentItem$: Subject<String[]> = new Subject<String[]>();
     user: User;
@@ -18,7 +18,7 @@ export class AppService {
     private state: State = {
         connectedUsers: {},
         disconnectedUsers: {},
-        chatHistory: [],
+        // chatHistory: [],
         workItems: [],
         currentItem: null
     };
@@ -65,10 +65,10 @@ export class AppService {
             this.updateState(data.state);
 
         });
-        this.socket.on('user chat', data => {
-            console.log('user chat', data.userID, data.message);
-            this.updateState(data.state)
-        })
+        // this.socket.on('user chat', data => {
+        //     console.log('user chat', data.userID, data.message);
+        //     this.updateState(data.state)
+        // });
     }
 
     updateState(newState: State) {
@@ -77,9 +77,9 @@ export class AppService {
             if (this.areJsonDifferent(newState.connectedUsers, oldState.connectedUsers)) {
                 this.users$.next(Object.values(newState.connectedUsers));
             }
-            if (this.areJsonDifferent(newState.chatHistory, oldState.chatHistory)) {
-                this.chatMessages$.next(newState.chatHistory);
-            }
+            // if (this.areJsonDifferent(newState.chatHistory, oldState.chatHistory)) {
+            //     this.chatMessages$.next(newState.chatHistory);
+            // }
             if (this.areJsonDifferent(newState.workItems, oldState.workItems)) {
                 // emit workItems
             }
@@ -117,15 +117,15 @@ export class AppService {
         this.socket.emit('user sign in', this.user);
     }
 
-    sendChat(message: String) {
-        this.state.chatHistory.push({
-            userID: this.user.id,
-            message,
-            timestamp: Date.now()
-        });
-        this.chatMessages$.next(this.state.chatHistory);
-        this.socket.emit('user chat', message);
-    }
+    // sendChat(message: String) {
+    //     this.state.chatHistory.push({
+    //         userID: this.user.id,
+    //         message,
+    //         timestamp: Date.now()
+    //     });
+    //     this.chatMessages$.next(this.state.chatHistory);
+    //     this.socket.emit('user chat', message);
+    // }
 }
 
 class State {
@@ -133,5 +133,5 @@ class State {
     disconnectedUsers: any = null;
     workItems: WorkItem[] = [];
     currentItem: WorkItem = null;
-    chatHistory: ChatMessage[] = [];
+    // chatHistory: ChatMessage[] = [];
 }

@@ -1,17 +1,17 @@
 <div class="poker-container" *ngIf="isSignedIn; else signedOut">
-    <div class="side-column">
+    <!-- <div class="side-column">
         <app-item-list [workItems]="itemsToPoint"></app-item-list>
-    </div>
+    </div> -->
     <div class="middle-column">
         <div class="header">
             <div class="current-item">
                 {{ currentItem.itemNumber }}
             </div>
-            <p-button
+            <!-- <p-button
                 [disabled]="!currentItem"
                 (click)="lockInVotes()"
                 label="Next Item">
-            </p-button>
+            </p-button> -->
         </div>
         <app-users></app-users>
         <div class="voting-buttons">
@@ -23,14 +23,14 @@
             </button>
         </div>
     </div>
-    <div class="side-column">
+    <!-- <div class="side-column">
         <ul style="list-style: none;">
             <li *ngFor="let message of chatMessages">
                 {{ message.message }}
             </li>
         </ul>
         <input #chatInput pInputText type="text" (keyup.enter)="sendChat(chatInput.value); chatInput.value = '';" />
-    </div>
+    </div> -->
 </div>
 <ng-template #signedOut>
     <div class="poker-container sign-in-form">

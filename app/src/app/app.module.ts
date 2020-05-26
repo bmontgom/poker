@@ -14,8 +14,8 @@ import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 const config: SocketIoConfig = {
     url: 'http://192.168.1.97:3000',
     options: {
-        rememberTransport: false,
-        transports: ['websocket']
+        transports: ['websocket'],
+        upgrade: false
     }
 };
 
