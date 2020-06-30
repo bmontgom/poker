@@ -20,6 +20,7 @@ export class AppService {
     connected$: new BehaviorSubject<boolean>(false)
   };
   user: User;
+  socketId: string;
 
   private state: State = {
     connectedUsers: {},
@@ -39,13 +40,13 @@ export class AppService {
   ];
 
   constructor(private socket: Socket) {
-    this.socket.on('confirm', newUserID => {
-      console.log('confirm', newUserID);
+    this.socket.on('confirm', data => {
+      //console.log('confirm', newUserID);
       if (!this.user) {
         this.user = new User(null, null);
-        this.user.id = newUserID
+        this.user.id = data.userId;
       } else if (!this.user.id) {
-        this.user.id = newUserID;
+        this.user.id = data.userId;;
       } else {
         this.socket.emit('reconnection', this.user);
       }
@@ -53,39 +54,39 @@ export class AppService {
       this.state$.connected$.next(true);
     });
     this.socket.on('disconnect', data => {
-      console.log('disconnected');
+      //console.log('disconnected');
       this.state$.connected$.next(false);
     });
     this.socket.on('user disconnect', data => {
-      console.log('user disconnect', data.userID);
+      //console.log('user disconnect', data.userID);
       this.updateState(data.state);
     });
     this.socket.on('user reconnect', data => {
-      console.log('user reconnect', data.userID);
+      //console.log('user reconnect', data.userID);
       this.updateState(data.state);
     });
     this.socket.on('user sign in', data => {
-      console.log('user sign in', data.user);
+      //console.log('user sign in', data.user);
       this.updateState(data.state);
     });
     this.socket.on('init', data => {
-      console.log('init', data);
+      //console.log('init', data);
       this.updateState(data.state);
-    })
+    });
     this.socket.on('user vote', data => {
-      console.log('user vote', data.userID, data.vote);
+      //console.log('user vote', data.userID, data.vote);
       this.updateState(data.state);
     });
     this.socket.on('switch work item', data => {
-      console.log('switch work item', data.userID, data.newItem);
+      //console.log('switch work item', data.userID, data.newItem);
       this.updateState(data.state);
     });
     this.socket.on('show votes', data => {
-      console.log('show votes', data.userID);
+      //console.log('show votes', data.userID);
       this.updateState(data.state);
     });
     // this.socket.on('user chat', data => {
-    //     console.log('user chat', data.userID, data.message);
+    ////     console.log('user chat', data.userID, data.message);
     //     this.updateState(data.state)
     // });
   }
