@@ -16,12 +16,14 @@
         </div>
         <app-users></app-users>
         <div class="voting-buttons">
+            <!-- @Todo white out unselected buttons once one is selected -->
             <button
                 pButton
                 class="ui-button-rounded"
                 *ngFor="let vote of allowedVotes"
                 (click)="castVote(vote)"
-                label="{{ vote.name || vote.value }}">
+                label="{{ vote.name || vote.value }}"
+                [ngClass]="{ 'ui-button-primary': !currentVote || currentVote === vote.value, 'ui-button-secondary': currentVote && currentVote !== vote.value }">
             </button>
         </div>
     </div>
@@ -70,8 +72,7 @@
   <input #newItem
     pInputText
     type="text"
-    (keyup.enter)="submitNewItem(newItem.value)"
-    required
+    (keyup.enter)="submitNewItem(newItem.value) && newItem.value = ''"
     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/>
   <p-footer>
     <p-button
@@ -81,7 +82,7 @@
     <p-button
       label="Submit"
       [disabled]="!newItem.value"
-      (click)="submitNewItem(newItem.value)">
+      (click)="submitNewItem(newItem.value) && newItem.value = ''">
     </p-button>
   </p-footer>
 </p-dialog>
