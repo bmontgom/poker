@@ -25,7 +25,7 @@ const state = {
 io.on('connection', (socket) => {
     let userID = uuid.v4();
     const socketID = socket.conn.id;
-    socket.emit('confirm', { socketId, userID });
+    socket.emit('confirm', { socketID, userID });
     slog('connected', socketID, userID);
 
     socket.on('reconnection', user => {
