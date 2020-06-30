@@ -20,25 +20,25 @@ export class UsersComponent {
     this.resetUserGroups();
 
     this.appService.state$.currentItem$.subscribe(newItem => {
-      console.log('current item changed');
+      //console.log('current item changed');
       if (newItem.areVotesShown) {
-        console.log('showing votes');
+        //console.log('showing votes');
         this.areVotesShown = true;
         this.updateUserGroups(this.users);
       } else {
-        console.log('hiding votes');
+        //console.log('hiding votes');
         this.areVotesShown = false;
       }
     });
     this.appService.state$.connectedUsers$.subscribe(users => {
-      console.log('users users updated', users);
+      //console.log('users users updated', users);
       this.users = users;
       this.updateUserGroups(users);
     });
   }
 
   showVotes() {
-    console.log('showVotes()');
+    //console.log('showVotes()');
     this.areVotesShown = true;
     this.appService.showVotes();
   }
@@ -46,9 +46,9 @@ export class UsersComponent {
   private updateUserGroups(users: User[]) {
     this.resetUserGroups();
     this.sortUsersIntoGroups(users);
-    console.log('sorted', this.userGroups);
+    //console.log('sorted', this.userGroups);
     this.filterAndSortGroups();
-    console.log('filtered', this.userGroups);
+    //console.log('filtered', this.userGroups);
   }
 
   private resetUserGroups() {
@@ -57,7 +57,7 @@ export class UsersComponent {
 
   private sortUsersIntoGroups(users: User[]) {
     users.forEach(user => {
-      console.log(user);
+      //console.log(user);
       if (user.vote) {
         const groupIndex = this.userGroups.findIndex(group => group.voteValue === user.vote.value);
         this.userGroups[groupIndex].members.push(user);
