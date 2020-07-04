@@ -93,11 +93,11 @@ export class AppService {
 
   updateState(newState: State) {
     const oldState = this.state;
-    if (this.areJsonDifferent(newState, oldState)) {
-      if (this.areJsonDifferent(newState.connectedUsers, oldState.connectedUsers)) {
+    if (this.areDifferent(newState, oldState)) {
+      if (this.areDifferent(newState.connectedUsers, oldState.connectedUsers)) {
         this.state$.connectedUsers$.next(Object.values(newState.connectedUsers));
       }
-      if (this.areJsonDifferent(newState.disconnectedUsers, oldState.disconnectedUsers)) {
+      if (this.areDifferent(newState.disconnectedUsers, oldState.disconnectedUsers)) {
         this.state$.disconnectedUsers$.next(Object.values(newState.disconnectedUsers));
       }
       // if (this.areJsonDifferent(newState.chatHistory, oldState.chatHistory)) {
@@ -106,14 +106,14 @@ export class AppService {
       // if (this.areJsonDifferent(newState.workItems, oldState.workItems)) {
       //   this.state$.workItems$.next(newState.workItems);
       // }
-      if (this.areJsonDifferent(newState.currentItem, oldState.currentItem)) {
+      if (this.areDifferent(newState.currentItem, oldState.currentItem)) {
         this.state$.currentItem$.next(newState.currentItem);
       }
       this.state = newState;
     }
   }
 
-  private areJsonDifferent(a: any, b: any) {
+  private areDifferent(a: any, b: any) {
     return JSON.stringify(a) !== JSON.stringify(b);
   }
 
@@ -121,11 +121,6 @@ export class AppService {
     this.socket.emit('user vote', vote);
     // this.state$.connectedUsers$.next(Object.values(this.state.connectedUsers));
   }
-
-  // lockInVote(workItem: WorkItem, points: number) {
-  //   this.state.connectedUsers.forEach(user => user.resetForNewItem());
-  //   this.state$.connectedUsers$.next(Object.values(this.state.connectedUsers));
-  // }
 
   switchItem(newItem: number) {
     this.socket.emit('switch work item', newItem);

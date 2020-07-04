@@ -14,8 +14,8 @@ import { DialogModule } from 'primeng/dialog';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 
 const config: SocketIoConfig = {
-    // url: '192.168.1.97:3000',
-    url: 'http://ec2-54-166-39-120.compute-1.amazonaws.com:3000',
+    url: 'localhost:8000',
+    // url: 'http://ec2-54-166-39-120.compute-1.amazonaws.com:8000',
     options: {
         transports: ['websocket'],
         upgrade: false

@@ -16,14 +16,16 @@
         </div>
         <app-users></app-users>
         <div class="voting-buttons">
-            <!-- @Todo white out unselected buttons once one is selected -->
             <button
                 pButton
                 class="ui-button-rounded"
                 *ngFor="let vote of allowedVotes"
                 (click)="castVote(vote)"
                 label="{{ vote.name || vote.value }}"
-                [ngClass]="{ 'ui-button-primary': !currentVote || currentVote === vote.value, 'ui-button-secondary': currentVote && currentVote !== vote.value }">
+                [ngClass]="{
+                    'ui-button-primary': currentVote === null || currentVote === vote.value,
+                    'ui-button-secondary': currentVote != null && currentVote !== vote.value
+                }">
             </button>
         </div>
     </div>

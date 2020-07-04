@@ -60,17 +60,11 @@ export class AppComponent implements OnInit {
         return true;
     }
 
-    // lockInVotes() {
-    //     this.appService.lockInVote(this.currentItem, 1);
-    //     this.pointedItems.push(this.currentItem);
-    //     this.currentItem = this.workItems.shift();
-    // }
-
     signIn(firstName: String, lastName: String) {
-        //todo check for previous socket connections and reconnect with same info
+        // @Todo check for previous socket connections and reconnect with same info
         if (firstName && lastName) {
             this.isSignedIn = true;
-            //todo wait for the socket to say yeah ok you're in
+            // @Todo wait for the socket to say yeah ok you're in
             this.appService.signIn(firstName, lastName);
         }
     }
