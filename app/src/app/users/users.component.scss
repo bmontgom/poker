@@ -42,11 +42,22 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                border: solid 2px gray;
                 color: black;
                 border-radius: 100%;
                 margin: 0.5rem;
                 padding-top: 0.25em;
+            }
+
+            .vote-count-0, .vote-count-1 {
+                border: solid 2px gray;
+            }
+
+            .vote-count-2 {
+                border: dashed 2px gray;
+            }
+
+            .vote-count-3 {
+                border: dotted 2px gray;
             }
         }
 

@@ -4,9 +4,14 @@
     </div> -->
     <div class="middle-column">
         <div class="header">
-            <div class="current-item">
-                {{ currentItem && currentItem.itemNumber || '-' }}
+            <div class="current-item"
+                *ngIf="currentItem && currentItem.itemNumber !== null; else noCurrentItem">
+                <a target="_blank"
+                    href="https://jbhunt.visualstudio.com/EngAndTech/_workitems/edit/{{ currentItem.itemNumber }}">
+                    {{ currentItem.itemNumber }}
+                </a>
             </div>
+            <ng-template #noCurrentItem>-</ng-template>
             <p-button
                 [disabled]="!currentItem"
                 (click)="showModal()"
@@ -49,8 +54,10 @@
           type="text"
           placeholder="first name"
           required
+          value="bob"
           (keyup.enter)="signIn(firstName.value, lastName.value)"/>
           <input
+          value="dole"
           #lastName
           pInputText
           type="text"

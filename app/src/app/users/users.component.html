@@ -6,7 +6,7 @@
       </div>
       <div class="group-users">
           <div *ngFor="let user of group.members"
-              class="user"
+              class="user vote-count-{{ user.voteHistory.length > 3 ? 3 : user.voteHistory.length }}"
               pTooltip="{{ user.firstName }} {{ user.lastName }} {{'\n'}} {{ user.voteHistoryDisplay }}"
               tooltipPosition="top">
               {{ user.firstName[0] + user.lastName[0] | uppercase }}

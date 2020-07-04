@@ -60,6 +60,8 @@ export class AppComponent implements OnInit {
         return true;
     }
 
+    // https://jbhunt.visualstudio.com/EngAndTech/_workitems/edit/539506
+
     signIn(firstName: String, lastName: String) {
         // @Todo check for previous socket connections and reconnect with same info
         if (firstName && lastName) {
