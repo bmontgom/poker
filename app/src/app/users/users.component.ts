@@ -12,6 +12,7 @@ export class UsersComponent {
   backupGroups: any = [];
   areVotesShown = false;
   users: User[] = [];
+  votesShownBy: User;
 
   constructor(private appService: AppService) {
     this.backupGroups = this.appService.allowedVotes
@@ -23,6 +24,7 @@ export class UsersComponent {
       //console.log('current item changed');
       if (newItem.areVotesShown) {
         //console.log('showing votes');
+        this.votesShownBy = newItem.votesShownBy;
         this.areVotesShown = true;
         this.updateUserGroups(this.users);
       } else {

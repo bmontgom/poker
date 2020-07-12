@@ -12,7 +12,9 @@
               {{ user.firstName[0] + user.lastName[0] | uppercase }}
           </div>
       </div>
+      <hr />
   </div>
+  <em *ngIf="votesShownBy">votes shown by {{ votesShownBy.firstName + ' ' + votesShownBy.lastName }}</em>
 </div>
 <ng-template #votesHidden>
   <div class="group-container">

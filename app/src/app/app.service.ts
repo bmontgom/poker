@@ -82,7 +82,6 @@ export class AppService {
       this.updateState(data.state);
     });
     this.socket.on('show votes', data => {
-      //console.log('show votes', data.userID);
       this.updateState(data.state);
     });
     // this.socket.on('user chat', data => {

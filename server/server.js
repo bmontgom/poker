@@ -15,12 +15,12 @@ const state = {
     // workItems: [],
     currentItem: {
         itemNumber: 0,
-        areVotesShown: false
+        areVotesShown: false,
+        votesShownBy: null
     },
     // chatHistory: [],
     disconnectedUsers: {},
 };
-
 
 io.on('connection', (socket) => {
     let userID = uuid.v4();
@@ -88,41 +88,25 @@ io.on('connection', (socket) => {
 
     socket.on('show votes', () => {
         slog('show votes', userID);
-        state.currentItem.areVotesShown = true;
-        socket.emit('show votes', { state, userID });
-        socket.broadcast.emit('show votes', { state, userID });
+        const user = state.connectedUsers[socketID];
+        if (user) {
+            state.currentItem.areVotesShown = true;
+            state.currentItem.votesShownBy = user;
+            socket.emit('show votes', { state, userID });
+            socket.broadcast.emit('show votes', { state, userID });
+        }
     });
-
-    // socket.on('add work item', data => {
-    //     slog('work item added', userID, data);
-    //     //save to state
-    //     //broadcast the addition
-    // });
-
-    // socket.on('user chat', message => {
-    //     slog('user chat', userID, message)
-    //     state.chatHistory.push({
-    //         userID,
-    //         timestamp: Date.now(),
-    //         message
-    //     });
-    //     socket.broadcast.emit('user chat', {
-    //         state: state,
-    //         userID: userID,
-    //         message: message
-    //     });
-    // });
 
     function slog() {
         console.log(socket.id, ...arguments);
     }
 });
 
-app.use(express.static(path.resolve(__dirname + '/../dist/poker/')));
-
 app.get('/', (req, res) => {
     res.sendFile(path.resolve(__dirname + '/../dist/poker/index.html'));
 });
+
+app.use(express.static(path.resolve(__dirname + '/../dist/poker/')));
 
 const port = 8000;
 

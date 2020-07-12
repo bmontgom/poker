@@ -60,8 +60,6 @@ export class AppComponent implements OnInit {
         return true;
     }
 
-    // https://jbhunt.visualstudio.com/EngAndTech/_workitems/edit/539506
-
     signIn(firstName: String, lastName: String) {
         // @Todo check for previous socket connections and reconnect with same info
         if (firstName && lastName) {
@@ -70,8 +68,4 @@ export class AppComponent implements OnInit {
             this.appService.signIn(firstName, lastName);
         }
     }
-
-    // sendChat(message: String) {
-    //     this.appService.sendChat(message);
-    // }
 }
